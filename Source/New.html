@@ -1,0 +1,55 @@
+<!doctype html>
+<html ng-app="weather" ng-controller="weathercontroller">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script>
+        angular.module('weather', [])
+            .controller('weathercontroller', function($scope, $http) {
+                $scope.getWeather = function() {
+                    $http.get('https://api.wunderground.com/api/36b799dc821d5836/conditions/q/'+$scope.State+'/'+$scope.City+'.json').success(function(data)
+                    {
+                        console.log(data);
+                        $scope.weather = "Current temperature is : " + data.current_observation.temp_f + "F and " +  data.current_observation.weather + "";
+                        $scope.pressure = "Pressure :" + data.current_observation.pressure_mb;
+                        $scope.humidity = "Relative Humidity :" + data.current_observation.relative_humidity;
+                        $scope.wind = "Wind :" + data.current_observation.wind_mph + "mph";
+                        icon= data.current_observation.icon_url;
+                        $scope.currentIcon = {
+                            html: "<img source='" +icon + "'/>"
+                        }
+                        document.getElementById("currentIcon").innerHTML = "<img src='" + icon + "'/>";
+                    })
+                }
+            });
+
+    </script>
+    <script>
+        .weatherModule {
+            background-color: blue;
+            height: 150px;
+            width: 250px;
+            border: 1px solid powderblue;
+            padding: 1em;
+            margin: 50px;
+        }
+    </script>
+</head>
+<body>
+<div>
+    <label>State :</label>
+    <input type="text" ng-model="State">
+    <label>City :</label>
+    <input type="text" ng-model="City">
+    <button id="btn" ng-click="getWeather()">Show Weather</button>
+    <div class="weatherModule">
+        <p class="currentConditions" ng-bind="weather"></p>
+        <p class="currentPressure" ng-bind="pressure"></p>
+        <p class="currentHumidity" ng-bind="humidity"></p>
+        <p class="currentWind" ng-bind="wind"></p>
+        <div class="currentIcon" ng-bind-html-unsafe="currentIcon.html" id="currentIcon"></div>
+
+    </div>
+
+</div>
+</body>
+</html>
